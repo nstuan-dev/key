@@ -82,9 +82,6 @@
     const msg = document.getElementById('msg');
     const usernameInput = document.getElementById('usernameInput');
 
-    const code = getCodeFromURL();
-    codeBox.textContent = code;
-
     function copyCode() {
       const username = usernameInput.value.trim();
       if (!username) {
