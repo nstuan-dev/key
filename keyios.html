@@ -75,12 +75,13 @@
   </div>
 
   <script>
-    
-
     const codeBox = document.getElementById('codeBox');
     const copyBtn = document.getElementById('copyBtn');
     const msg = document.getElementById('msg');
     const usernameInput = document.getElementById('usernameInput');
+
+    const code = 'NTDShare-1d-80slbrntc1pzuk'; // Dùng mã cố định
+    codeBox.textContent = code;
 
     function copyCode() {
       const username = usernameInput.value.trim();
