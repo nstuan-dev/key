@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chọn Hệ Điều Hành</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f2f5;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    h1 {
+      margin-bottom: 30px;
+      font-size: 24px;
+      text-align: center;
+    }
+
+    .btn {
+      width: 100%;
+      max-width: 300px;
+      padding: 15px;
+      font-size: 18px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      color: white;
+      transition: background 0.3s;
+    }
+
+    .android-btn {
+      background-color: #4caf50;
+    }
+
+    .android-btn:hover {
+      background-color: #45a049;
+    }
+
+    .ios-btn {
+      background-color: #2196f3;
+    }
+
+    .ios-btn:hover {
+      background-color: #1976d2;
+    }
+  </style>
+</head>
+<body>
+  <h1>Chọn nền tảng bạn cần KEY</h1>
+  <button class="btn android-btn" onclick="location.href='keyandroid.html'">KEY ANDROID</button>
+  <button class="btn ios-btn" onclick="location.href='keyios.html'">KEY IOS</button>
+</body>
+</html>

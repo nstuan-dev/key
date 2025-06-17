@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Xác thực Code</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f9;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .container {
+      background: white;
+      padding: 40px 60px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    .code-box {
+      display: inline-block;
+      padding: 15px 20px;
+      background: #e8e8ff;
+      border: 2px dashed #888;
+      border-radius: 8px;
+      font-size: 24px;
+      letter-spacing: 2px;
+      margin: 20px 0;
+      cursor: pointer;
+      user-select: none;
+    }
+    .copy-btn {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
+      background: #5c6bc0;
+      color: white;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .copy-btn:hover {
+      background: #3f51b5;
+    }
+    .msg {
+      margin-top: 15px;
+      font-size: 16px;
+      color: #2e7d32;
+      display: none;
+    }
+    .name-input {
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      margin-top: 10px;
+      width: 80%;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>LIÊN QUÂN 18/06</h1>
+    <h2>KEY IOS</h2>
+    <input type="text" id="usernameInput" class="name-input" placeholder="Nhập tên trước khi copy"><br>
+    <div class="code-box" id="codeBox">--CODE--</div>
+    <button class="copy-btn" id="copyBtn">Copy mã</button>
+    <div class="msg" id="msg">TuanDev đã cho bạn copy | Cầm dầu ăn qua để nhận KEY VIP :))</div>
+  </div>
+
+  <script>
+    function getCodeFromURL() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('code') || '--CODE--';
+    }
+
+    const codeBox = document.getElementById('codeBox');
+    const copyBtn = document.getElementById('copyBtn');
+    const msg = document.getElementById('msg');
+    const usernameInput = document.getElementById('usernameInput');
+
+    const code = getCodeFromURL();
+    codeBox.textContent = code;
+
+    function copyCode() {
+      const username = usernameInput.value.trim();
+      if (!username) {
+        alert("Mở mắt ra nhập tên trước khi copy!");
+        return;
+      }
+
+      navigator.clipboard.writeText(code).then(() => {
+        msg.style.display = 'block';
+        setTimeout(() => msg.style.display = 'none', 3000);
+      }).catch(err => {
+        alert('Không thể sao chép: ' + err);
+      });
+    }
+
+    codeBox.addEventListener('click', copyCode);
+    copyBtn.addEventListener('click', copyCode);
+  </script>
+</body>
+</html>
