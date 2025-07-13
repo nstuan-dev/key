@@ -127,14 +127,14 @@
 <body>
 
  <video id="bgVideo" autoplay muted loop playsinline>
-  <source src="https://cdn.jsdelivr.net/gh/thienth-code/video-bg@main/tbutc9-fixed.mp4" type="video/mp4">
+  <source src="https://files.catbox.moe/tbutc9.mp4" type="video/mp4">
   Trình duyệt không hỗ trợ video.
 </video>
 
 
   <!-- 🔊 Nhạc nền và nhạc key -->
   <audio id="bgMusic" src="https://files.catbox.moe/r8lvqz.mp3" preload="auto" autoplay loop></audio>
-  <audio id="keyMusic" src="https://files.catbox.moe/r8lvqz.mp3" preload="auto"></audio>
+  <audio id="keyMusic" src="https://files.catbox.moe/r8lvqz.mp3" preload autoplay loop="auto"></audio>
 
   <div class="container">
     <h1>🔐 KEY VIP LIÊN QUÂN 13/07</h1>
@@ -188,7 +188,7 @@
     function showKey() {
       const randomKey = keys[Math.floor(Math.random() * keys.length)];
       keyBox.textContent = randomKey;
-      countdownBox.textContent = "✅ Key đã sẵn sàng. Copy nhanh nhé!";
+      countdownBox.textContent = "✅ Key đã sẵn sàng. Copy nhanh mẹ tay không hết giờ!";
 
       if (!bgMusic.paused) bgMusic.pause(); // Tắt nhạc nền
       keyMusic.currentTime = 0;
@@ -198,11 +198,11 @@
     function copyKey() {
       const key = keyBox.textContent;
       if (key.includes("chờ") || key.includes("nhấn") || key.includes("http")) {
-        alert("⚠️ Vui lòng nhấn 'Lấy Key' trước!");
+        alert("⚠️ Thấy chữ  'Lấy Key' không hmmm!");
         return;
       }
       navigator.clipboard.writeText(key).then(() => {
-        alert("✅ Đã copy key!");
+        alert("✅ Đã copy key! Cầm dầu ăn qua KEY VIP");
       });
     }
 
