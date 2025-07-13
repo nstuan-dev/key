@@ -1,62 +1,222 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GETKEY-TuanDev</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>KEY IOS VIP</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f0f2f5;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      margin: 0;
-      padding: 20px;
+    * {
       box-sizing: border-box;
     }
-
-    h1 {
-      margin-bottom: 30px;
-      font-size: 24px;
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      background: url('https://i.imgur.com/CNzpp0A.jpg') no-repeat center center fixed;
+      background-size: cover;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #fff;
+    }
+    .container {
+      background: rgba(0, 0, 0, 0.6);
+      border: 2px solid gold;
+      border-radius: 20px;
+      padding: 30px 20px;
+      max-width: 420px;
+      width: 90%;
       text-align: center;
+      box-shadow: 0 0 30px gold;
+      backdrop-filter: blur(5px);
+      animation: glow 2s infinite alternate;
     }
-
-    .btn {
-      width: 100%;
-      max-width: 300px;
+    @keyframes glow {
+      from { box-shadow: 0 0 15px gold; }
+      to { box-shadow: 0 0 30px gold; }
+    }
+    h1 {
+      color: gold;
+      text-shadow: 0 0 8px gold;
+      font-size: 1.7rem;
+    }
+    #keyBox {
+      background: rgba(255,255,255,0.1);
+      border: 2px dashed gold;
       padding: 15px;
-      font-size: 18px;
-      margin: 10px 0;
+      margin: 20px 0;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      min-height: 60px;
+      word-break: break-word;
+      animation: flicker 1.5s infinite alternate;
+    }
+    @keyframes flicker {
+      0% { border-color: #f9e000; box-shadow: 0 0 10px #f9e00033; }
+      100% { border-color: #fff000; box-shadow: 0 0 20px #fff000aa; }
+    }
+    .button-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+    }
+    button {
+      flex: 1 1 45%;
+      padding: 12px;
+      font-size: 1rem;
+      background: gold;
+      color: black;
       border: none;
-      border-radius: 8px;
+      border-radius: 10px;
+      font-weight: bold;
       cursor: pointer;
-      color: white;
-      transition: background 0.3s;
+      box-shadow: 0 4px 12px rgba(255, 215, 0, 0.4);
+      transition: 0.3s ease;
     }
-
-    .android-btn {
-      background-color: #4caf50;
+    button:hover {
+      transform: scale(1.05);
+      background: #fff000;
     }
-
-    .android-btn:hover {
-      background-color: #45a049;
+    #musicControl {
+      margin-top: 10px;
+      background: transparent;
+      border: 1px solid gold;
+      color: gold;
+      flex: 1 1 100%;
     }
-
-    .ios-btn {
-      background-color: #2196f3;
+    .qrcode {
+      margin-top: 20px;
     }
-
-    .ios-btn:hover {
-      background-color: #1976d2;
+    .qrcode img {
+      width: 120px;
+      height: auto;
+      border: 2px solid gold;
+      border-radius: 10px;
+      box-shadow: 0 0 10px gold;
+    }
+    a {
+      color: #00ffff;
+      text-decoration: underline;
+    }
+    @media screen and (max-width: 480px) {
+      h1 {
+        font-size: 1.4rem;
+      }
+      button {
+        font-size: 0.9rem;
+      }
+      .qrcode img {
+        width: 100px;
+      }
     }
   </style>
 </head>
 <body>
-  <h1>Chọn nền tảng bạn cần KEY</h1>
-  <button class="btn android-btn" onclick="location.href='keyandroid.html'">KEY ANDROID</button>
-  <button class="btn ios-btn" onclick="location.href='keyios.html'">KEY IOS</button>
+  <!-- Nhạc nền tự động -->
+  <audio id="bgMusic" src="https://files.catbox.moe/r8lvqz.mp3" preload="auto" autoplay loop></audio>
+  
+  <!-- Nhạc khi hiện KEY -->
+  <audio id="keyMusic" src="https://files.catbox.moe/r8lvqz.mp3" preload="auto"></audio>
+
+  <div class="container">
+    <h1>🔐 KEY VIP LIÊN QUÂN 13/07</h1>
+
+    <div id="keyBox">
+      <a href="https://new.ppapikey.xyz/lay-link-key?tokenID=86&user=Hackiosvip" target="_blank">
+        🔗 Nhấn vào đây nếu không nhận được key!
+      </a>
+    </div>
+
+    <div class="button-group">
+      <button onclick="startCountdown()">🎁 Lấy Key</button>
+      <button onclick="copyKey()">📋 Copy</button>
+      <button onclick="contactZalo()">💬 Zalo Tuấn-Dev</button>
+      <button id="musicControl" onclick="toggleMusic()">🔊 Tắt nhạc nền</button>
+    </div>
+
+    <div id="countdown" style="margin-top: 10px;"></div>
+
+    <div class="qrcode">
+      <p>📱 Quét Zalo để tâm sự kín</p>
+      <img src="https://chart.googleapis.com/chart?cht=qr&chl=https://zalo.me/0876765430&chs=200x200" alt="QR Zalo">
+    </div>
+  </div>
+
+  <script>
+    const keyBox = document.getElementById('keyBox');
+    const countdownBox = document.getElementById('countdown');
+    const bgMusic = document.getElementById('bgMusic');
+    const keyMusic = document.getElementById('keyMusic');
+    const musicControl = document.getElementById('musicControl');
+
+    const keys = [
+      "NTDShare-1d-psr8wba45fq3gz"
+    ];
+
+    function startCountdown() {
+      let timeLeft = 5;
+      keyBox.innerHTML = "⏳ Vui lòng chờ " + timeLeft + " giây...";
+      countdownBox.textContent = "";
+
+      const interval = setInterval(() => {
+        timeLeft--;
+        if (timeLeft > 0) {
+          keyBox.innerHTML = "⏳ Vui lòng chờ " + timeLeft + " giây...";
+        } else {
+          clearInterval(interval);
+          showKey();
+        }
+      }, 1000);
+    }
+
+    function showKey() {
+      const randomKey = keys[Math.floor(Math.random() * keys.length)];
+      keyBox.textContent = randomKey;
+      countdownBox.textContent = "✅ Key đã sẵn sàng. Copy mọe đi hết thời gian!";
+
+      // Tắt nhạc nền và bật nhạc key
+      if (!bgMusic.paused) bgMusic.pause();
+      keyMusic.currentTime = 0;
+      keyMusic.play().catch(err => console.warn("Không thể phát nhạc KEY:", err));
+    }
+
+    function copyKey() {
+      const key = keyBox.textContent;
+      if (key.includes("chờ") || key.includes("nhấn") || key.includes("http")) {
+        alert("⚠️ Thấy chữ  'Lấy Key' không !");
+        return;
+      }
+      navigator.clipboard.writeText(key).then(() => {
+        alert("✅ Đã copy key! 🔥 Mang theo dầu ăn để nhận VIP CODE");
+      });
+    }
+
+    function contactZalo() {
+      window.open("https://zalo.me/0876765430", "_blank");
+    }
+
+    function toggleMusic() {
+      if (bgMusic.paused) {
+        bgMusic.play();
+        musicControl.textContent = "🔊 Tắt nhạc nền";
+      } else {
+        bgMusic.pause();
+        musicControl.textContent = "🔇 Bật lại nhạc nền";
+      }
+    }
+
+    // Tự động phát nhạc khi trang tải
+    window.addEventListener("load", () => {
+      const playPromise = bgMusic.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(err => {
+          console.warn("Trình duyệt có thể chặn autoplay:", err);
+        });
+      }
+    });
+  </script>
 </body>
 </html>
