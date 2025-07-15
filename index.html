@@ -134,13 +134,13 @@
 
   <!-- 🔊 Nhạc nền và nhạc key -->
   <audio id="bgMusic" src="https://files.catbox.moe/r8lvqz.mp3" preload="auto" autoplay loop></audio>
-  <audio id="keyMusic" src="" preload autoplay loop="auto"></audio>
+  <audio id="keyMusic" src="https://files.catbox.moe/r8lvqz.mp3" preload autoplay loop="auto"></audio>
 
   <div class="container">
     <h1>🔐 KEY VIP LIÊN QUÂN 13/07</h1>
 
     <div id="keyBox">
-      <a href="" target="_blank">
+      <a href="https://new.ppapikey.xyz/lay-link-key?tokenID=86&user=Hackiosvip" target="_blank">
         🔗 Nhấn vào đây nếu không nhận được key!
       </a>
     </div>
@@ -149,6 +149,7 @@
       <button onclick="startCountdown()">🎁 Lấy Key</button>
       <button onclick="copyKey()">📋 Copy</button>
       <button onclick="contactZalo()">💬 Zalo Tuấn-Dev</button>
+      <button onclick="install()">Download V1</button>
       <button id="musicControl" onclick="toggleMusic()">🔊 Tắt nhạc nền</button>
     </div>
 
@@ -167,7 +168,7 @@
     const keyMusic = document.getElementById('keyMusic');
     const musicControl = document.getElementById('musicControl');
 
-    const keys = ["Tuấn Đang update!! Chờ 2030"];
+    const keys = ["NTDShare-1d-psr8wba45fq3gz"];
 
     function startCountdown() {
       let timeLeft = 5;
@@ -219,6 +220,12 @@
         musicControl.textContent = "🔇 Bật lại nhạc nền";
       }
     }
+  
+  function install() {
+    window.location.href = "keyios.html";
+  }
+
+
 
     // Cố gắng phát nhạc nền khi load (nếu được phép)
     window.addEventListener("load", () => {
