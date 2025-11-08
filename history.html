@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lịch sử giao dịch</title>
+    <style>
+        body {
+            font-family: Arial;
+            margin: 0;
+            background: linear-gradient(to bottom, #f0f2f5, #d9e2f3);
+        }
+
+        .card {
+            background: white;
+            margin: 20px;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #ccc;
+            text-align: left;
+        }
+
+        button {
+            padding: 5px 10px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            margin-right: 5px;
+        }
+
+        .btn-edit {
+            background: #ffc107;
+            color: white;
+        }
+
+        .btn-delete {
+            background: #dc3545;
+            color: white;
+        }
+
+        nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px;
+            border-top: 1px solid #ccc;
+            border-radius: 15px 15px 0 0;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #007bff;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h2 style="padding:20px;">Lịch sử giao dịch</h2>
+    <div class="card">
+        <table id="historyTable">
+            <tr>
+                <th>Loại</th>
+                <th>Số tiền</th>
+                <th>Ghi chú</th>
+                <th>Ngày</th>
+            </tr>
+        </table>
+    </div>
+
+    <nav>
+        <a href="dashboard.html">🏠 Dashboard</a>
+        <a href="history.html">📜 Lịch sử</a>
+    </nav>
+
+    <script>
+        const API_URL = "https://script.google.com/macros/s/AKfycby0XS4g_RV8t2NjkbtAhX3-ssT-ItTDVsgOmvZZJhZHJksYsxg8shaNF9eR5D5xPXKk/exec";
+        const user = sessionStorage.getItem("currentUser");
+        if (!user) window.location.href = "index.html";
+
+        async function fetchHistory() {
+            try {
+                const res = await fetch(API_URL);
+                const data = await res.json();
+                const txs = data.filter(t => t.username === user).sort((a, b) => new Date(b.date) - new Date(a.date));
+                const table = document.getElementById("historyTable");
+                table.innerHTML = '<tr><th>Loại</th><th>Số tiền</th><th>Ghi chú</th><th>Ngày</th></tr>';
+                txs.forEach(t => {
+                    const row = table.insertRow(-1);
+                    row.innerHTML = `<td>${t.type}</td>
+        <td>${parseFloat(t.amount).toLocaleString()}</td>
+        <td>${t.note}</td>
+        <td>${new Date(t.date).toLocaleString()}</td>`;
+                });
+            } catch (err) {
+                alert("Lỗi lấy dữ liệu từ Google Sheets!");
+                console.error(err);
+            }
+        }
+
+        fetchHistory();
+    </script>
+</body>
+
+</html>
