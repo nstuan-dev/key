@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="vi">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,10 +7,12 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: linear-gradient(to bottom, #f0f2f5, #d9e2f3);
       margin: 0;
       padding: 0;
+      background: linear-gradient(to bottom, #f0f2f5, #d9e2f3);
     }
+
+    .hidden { display: none; }
 
     header {
       background: #36d1dc;
@@ -27,13 +28,12 @@
     .card {
       background: white;
       border-radius: 15px;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
       padding: 20px;
       margin-bottom: 20px;
     }
 
-    input,
-    select {
+    input, select {
       width: 100%;
       padding: 10px;
       margin: 5px 0 10px 0;
@@ -51,68 +51,84 @@
       cursor: pointer;
     }
 
+    button:hover { opacity: 0.9; }
+
     table {
       width: 100%;
       border-collapse: collapse;
     }
 
-    th,
-    td {
+    th, td {
       padding: 10px;
       border-bottom: 1px solid #ccc;
       text-align: left;
     }
+
+    .login-box {
+      max-width: 300px;
+      margin: 50px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      text-align: center;
+    }
+
+    #msg { color: red; }
   </style>
 </head>
-
 <body>
 
-  <header>
-    <h1>Xin chào, <span id="welcome"></span> 👋</h1>
-  </header>
+  <!-- Login Form -->
+  <div id="loginPage" class="login-box">
+    <h2>Đăng nhập</h2>
+    <input type="text" id="username" placeholder="Tên đăng nhập">
+    <input type="password" id="password" placeholder="Mật khẩu">
+    <button onclick="login()">Đăng nhập</button>
+    <p id="msg"></p>
+  </div>
 
-  <div class="container">
+  <!-- Dashboard -->
+  <div id="dashboardPage" class="hidden">
+    <header>
+      <h1>Xin chào, <span id="welcome"></span></h1>
+    </header>
+    <div class="container">
 
-    <!-- Form nhập giao dịch -->
-    <div class="card">
-      <h2>Thêm giao dịch mới</h2>
-      <select id="type">
-        <option value="Thu">Thu</option>
-        <option value="Chi">Chi</option>
-      </select>
-      <input type="number" id="amount" placeholder="Số tiền">
-      <input type="text" id="note" placeholder="Ghi chú">
-      <button onclick="saveTransaction()">💾 Lưu giao dịch</button>
+      <!-- Form nhập giao dịch -->
+      <div class="card">
+        <h2>Thêm giao dịch mới</h2>
+        <select id="type">
+          <option value="Thu">Thu</option>
+          <option value="Chi">Chi</option>
+        </select>
+        <input type="number" id="amount" placeholder="Số tiền">
+        <input type="text" id="note" placeholder="Ghi chú">
+        <button onclick="saveTransaction()">💾 Lưu giao dịch</button>
+      </div>
+
+      <!-- Lịch sử giao dịch -->
+      <div class="card">
+        <h2>Lịch sử giao dịch</h2>
+        <table id="historyTable">
+          <tr>
+            <th>Loại</th>
+            <th>Số tiền</th>
+            <th>Ghi chú</th>
+            <th>Ngày</th>
+          </tr>
+        </table>
+      </div>
+
+      <button onclick="logout()">Đăng xuất</button>
+
     </div>
-
-    <!-- Lịch sử giao dịch -->
-    <div class="card">
-      <h2>Lịch sử giao dịch</h2>
-      <table id="historyTable">
-        <tr>
-          <th>Loại</th>
-          <th>Số tiền</th>
-          <th>Ghi chú</th>
-          <th>Ngày</th>
-        </tr>
-      </table>
-    </div>
-
   </div>
 
   <!-- Firebase + Logic -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-app.js";
-    import {
-      getFirestore,
-      collection,
-      addDoc,
-      getDocs,
-      query,
-      where,
-      orderBy,
-      Timestamp
-    } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, getDocs, query, where, orderBy, Timestamp } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js";
 
     // Firebase config
     const firebaseConfig = {
@@ -127,15 +143,57 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // Lấy user từ sessionStorage
-    const user = sessionStorage.getItem("currentUser");
-    const fullName = sessionStorage.getItem("fullName");
-    if (!user) window.location.href = "index.html";
+    // Tài khoản mẫu
+    const accounts = {
+      "t": { password: "1", fullName: "Nguyễn Sĩ Tuấn" },
+      "huy": { password: "123", fullName: "Vũ Gia Huy" },
+      "phuong": { password: "123", fullName: "Vũ Đình Phương" }
+    };
 
-    document.getElementById("welcome").textContent = fullName;
+    const loginPage = document.getElementById("loginPage");
+    const dashboardPage = document.getElementById("dashboardPage");
+
+    function login() {
+      const user = document.getElementById("username").value.trim();
+      const pass = document.getElementById("password").value.trim();
+      const msg = document.getElementById("msg");
+
+      if (accounts[user] && accounts[user].password === pass) {
+        sessionStorage.setItem("currentUser", user);
+        sessionStorage.setItem("fullName", accounts[user].fullName);
+        msg.textContent = "";
+
+        // Hiển thị dashboard
+        showDashboard();
+      } else {
+        msg.textContent = "Sai tài khoản hoặc mật khẩu!";
+      }
+    }
+
+    function logout() {
+      sessionStorage.clear();
+      dashboardPage.classList.add("hidden");
+      loginPage.classList.remove("hidden");
+    }
+
+    function showDashboard() {
+      loginPage.classList.add("hidden");
+      dashboardPage.classList.remove("hidden");
+      const user = sessionStorage.getItem("currentUser");
+      const fullName = sessionStorage.getItem("fullName");
+      document.getElementById("welcome").textContent = fullName;
+
+      loadHistory();
+    }
+
+    // Nếu đã login trước đó
+    if (sessionStorage.getItem("currentUser")) {
+      showDashboard();
+    }
 
     // Lưu giao dịch
     async function saveTransaction() {
+      const user = sessionStorage.getItem("currentUser");
       const amount = parseFloat(document.getElementById("amount").value);
       const note = document.getElementById("note").value || "Giao dịch";
       const type = document.getElementById("type").value;
@@ -154,7 +212,7 @@
         alert("✅ Lưu giao dịch thành công!");
         document.getElementById("amount").value = "";
         document.getElementById("note").value = "";
-        loadHistory(); // load lại lịch sử
+        loadHistory();
       } catch (err) {
         console.error(err);
         alert("❌ Lỗi lưu vào Firebase!");
@@ -163,6 +221,7 @@
 
     // Load lịch sử giao dịch
     async function loadHistory() {
+      const user = sessionStorage.getItem("currentUser");
       const q = query(
         collection(db, "transactions"),
         where("username", "==", user),
@@ -174,7 +233,7 @@
 
       snapshot.docs.forEach(doc => {
         const t = doc.data();
-        const date = t.date.toDate(); // Firestore Timestamp → JS Date
+        const date = t.date.toDate();
         const row = table.insertRow(-1);
         row.innerHTML = `<td>${t.type}</td>
                          <td>${t.amount.toLocaleString()}</td>
@@ -182,8 +241,6 @@
                          <td>${date.toLocaleString()}</td>`;
       });
     }
-
-    loadHistory();
   </script>
 
 </body>
