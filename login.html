@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng nhập Ví Cá Nhân</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to right, #74ebd5, #ACB6E5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .login-box {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            width: 300px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(90deg, #36d1dc, #5b86e5);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        #msg {
+            color: red;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-box">
+        <h2>Đăng nhập</h2>
+        <input type="text" id="username" placeholder="Tên đăng nhập">
+        <input type="password" id="password" placeholder="Mật khẩu">
+        <button onclick="login()">Đăng nhập</button>
+        <p id="msg"></p>
+    </div>
+
+    <script>
+        const accounts = {
+            "t": { password: "1", fullName: "Nguyễn Sĩ Tuấn" },
+            "huy": { password: "123", fullName: "Vũ Gia Huy" },
+            "phuong": { password: "123", fullName: "Vũ Đình Phương" }
+        };
+
+        function login() {
+            const user = document.getElementById("username").value.trim();
+            const pass = document.getElementById("password").value.trim();
+            const msg = document.getElementById("msg");
+            if (accounts[user] && accounts[user].password === pass) {
+                sessionStorage.setItem("currentUser", user);
+                sessionStorage.setItem("fullName", accounts[user].fullName);
+                window.location.href = "dashboard.html";
+            } else {
+                msg.textContent = "Sai tài khoản hoặc mật khẩu!";
+            }
+        }
+    </script>
+</body>
+
+</html>
