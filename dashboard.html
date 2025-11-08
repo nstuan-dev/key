@@ -1,144 +1,190 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard - Ví Cá Nhân</title>
-<script type="module" src="firebase-config.js"></script>
-<script type="module" src="https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js"></script>
-<script type="module" src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<style>
-body { font-family: Arial, sans-serif; margin:0; background:linear-gradient(to bottom,#f0f2f5,#d9e2f3); }
-.header { display:flex; justify-content:space-between; align-items:center; padding:20px; background:#fff; box-shadow:0 2px 5px rgba(0,0,0,0.1); }
-.card { background:white; padding:20px; border-radius:15px; margin:20px; box-shadow:0 5px 15px rgba(0,0,0,0.1); }
-input, select, button { padding:10px; margin:5px; border-radius:8px; border:1px solid #ccc; }
-button { font-weight:bold; cursor:pointer; }
-.btn-success { background:#28a745; color:white; border:none; }
-.btn-success:hover, .btn-danger:hover { opacity:0.9; }
-.btn-danger { background:#dc3545; color:white; border:none; }
-nav { position:fixed; bottom:0; left:0; right:0; background:white; display:flex; justify-content:space-around; padding:10px; border-top:1px solid #ccc; border-radius:15px 15px 0 0; }
-nav a { text-decoration:none; color:#007bff; font-weight:bold; }
-</style>
-</head>
-<body>
-<div class="header">
-  <h2>Xin chào, <span id="welcome"></span> 👋</h2>
-  <button class="btn-danger" onclick="logout()">Đăng xuất</button>
-</div>
-
-<div class="card">
-  <h3>Số dư hiện tại: <span id="balance">0</span> VND</h3>
-  <input type="number" id="amount" placeholder="Nhập số tiền">
-  <input type="text" id="note" placeholder="Ghi chú">
-  <select id="type">
-    <option value="income">Thu nhập</option>
-    <option value="expense">Chi tiêu</option>
-  </select>
-  <select id="category">
-    <option value="Ăn uống">Ăn uống</option>
-    <option value="Giải trí">Giải trí</option>
-    <option value="Đi lại">Đi lại</option>
-    <option value="Khác">Khác</option>
-  </select>
-  <button class="btn-success" onclick="saveTransaction()">💾 Lưu giao dịch</button>
-</div>
-
-<div class="card">
-  <h3>Biểu đồ thu/chi theo tháng</h3>
-  <canvas id="barChart" height="200"></canvas>
-</div>
-
-<nav>
-  <a href="dashboard.html">🏠 Dashboard</a>
-  <a href="history.html">📜 Lịch sử</a>
-</nav>
-
-<script type="module">
-  import { db } from './firebase-config.js';
-  import { collection, addDoc, getDocs, query, where } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js";
-
-  const user = sessionStorage.getItem("currentUser");
-  const fullName = sessionStorage.getItem("fullName");
-  if(!user) window.location.href = "index.html";
-  document.getElementById("welcome").textContent = fullName;
-
-  let transactions = [], barChart;
-
-  async function fetchData() {
-    try {
-      const q = query(collection(db,"transactions"), where("username","==",user));
-      const querySnapshot = await getDocs(q);
-      transactions = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      updateDashboard();
-    } catch(err) {
-      console.error("Lỗi lấy dữ liệu:", err);
-      alert("⚠️ Không thể load dữ liệu từ Firebase!");
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ví Cá Nhân</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to bottom, #f0f2f5, #d9e2f3);
+      margin: 0;
+      padding: 0;
     }
-  }
 
-  function updateDashboard() {
-    const balance = transactions.reduce((sum,t) =>
-      t.type==="income"? sum + Number(t.amount) : sum - Number(t.amount),0);
-    document.getElementById("balance").textContent = balance.toLocaleString();
-    renderBarChart();
-  }
+    header {
+      background: #36d1dc;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
 
-  async function saveTransaction() {
-    const amount = parseFloat(document.getElementById("amount").value);
-    const note = document.getElementById("note").value || "Giao dịch";
-    const type = document.getElementById("type").value;
-    const category = document.getElementById("category").value;
+    .container {
+      padding: 20px;
+    }
 
-    if(!amount || amount<=0) return alert("❗ Nhập số tiền hợp lệ");
+    .card {
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      margin-bottom: 20px;
+    }
 
-    const newTrans = {
-      username: user,
-      date: new Date(),
-      note,
-      type,
-      category,
-      amount
+    input,
+    select {
+      width: 100%;
+      padding: 10px;
+      margin: 5px 0 10px 0;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      padding: 10px 20px;
+      border-radius: 8px;
+      border: none;
+      background: #36d1dc;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      padding: 10px;
+      border-bottom: 1px solid #ccc;
+      text-align: left;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <h1>Xin chào, <span id="welcome"></span> 👋</h1>
+  </header>
+
+  <div class="container">
+
+    <!-- Form nhập giao dịch -->
+    <div class="card">
+      <h2>Thêm giao dịch mới</h2>
+      <select id="type">
+        <option value="Thu">Thu</option>
+        <option value="Chi">Chi</option>
+      </select>
+      <input type="number" id="amount" placeholder="Số tiền">
+      <input type="text" id="note" placeholder="Ghi chú">
+      <button onclick="saveTransaction()">💾 Lưu giao dịch</button>
+    </div>
+
+    <!-- Lịch sử giao dịch -->
+    <div class="card">
+      <h2>Lịch sử giao dịch</h2>
+      <table id="historyTable">
+        <tr>
+          <th>Loại</th>
+          <th>Số tiền</th>
+          <th>Ghi chú</th>
+          <th>Ngày</th>
+        </tr>
+      </table>
+    </div>
+
+  </div>
+
+  <!-- Firebase + Logic -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-app.js";
+    import {
+      getFirestore,
+      collection,
+      addDoc,
+      getDocs,
+      query,
+      where,
+      orderBy,
+      Timestamp
+    } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js";
+
+    // Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyCpaFVgN8HTtj_2i8_r1AlUWuF-5kL8SJg",
+      authDomain: "wallet-36897.firebaseapp.com",
+      projectId: "wallet-36897",
+      storageBucket: "wallet-36897.appspot.com",
+      messagingSenderId: "996233632733",
+      appId: "1:996233632733:web:d55a4a9951dd0c9095b434"
     };
 
-    try {
-      await addDoc(collection(db,"transactions"),newTrans);
-      document.getElementById("amount").value="";
-      document.getElementById("note").value="";
-      alert("✅ Lưu giao dịch thành công!");
-      await fetchData();
-    } catch(err) {
-      console.error("Lỗi lưu dữ liệu:", err);
-      alert("🚫 Không thể lưu dữ liệu vào Firebase!");
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // Lấy user từ sessionStorage
+    const user = sessionStorage.getItem("currentUser");
+    const fullName = sessionStorage.getItem("fullName");
+    if (!user) window.location.href = "index.html";
+
+    document.getElementById("welcome").textContent = fullName;
+
+    // Lưu giao dịch
+    async function saveTransaction() {
+      const amount = parseFloat(document.getElementById("amount").value);
+      const note = document.getElementById("note").value || "Giao dịch";
+      const type = document.getElementById("type").value;
+
+      if (!amount || amount <= 0) return alert("Nhập số tiền hợp lệ!");
+
+      try {
+        await addDoc(collection(db, "transactions"), {
+          username: user,
+          type,
+          amount,
+          note,
+          date: Timestamp.fromDate(new Date())
+        });
+
+        alert("✅ Lưu giao dịch thành công!");
+        document.getElementById("amount").value = "";
+        document.getElementById("note").value = "";
+        loadHistory(); // load lại lịch sử
+      } catch (err) {
+        console.error(err);
+        alert("❌ Lỗi lưu vào Firebase!");
+      }
     }
-  }
 
-  function renderBarChart() {
-    const monthlyIncome = {}, monthlyExpense = {};
-    transactions.forEach(t => {
-      const m = new Date(t.date.seconds ? t.date.toDate() : t.date).toLocaleString('vi-VN',{month:'2-digit',year:'numeric'});
-      if(t.type==='income') monthlyIncome[m]=(monthlyIncome[m]||0)+Number(t.amount);
-      else monthlyExpense[m]=(monthlyExpense[m]||0)+Number(t.amount);
-    });
+    // Load lịch sử giao dịch
+    async function loadHistory() {
+      const q = query(
+        collection(db, "transactions"),
+        where("username", "==", user),
+        orderBy("date", "desc")
+      );
+      const snapshot = await getDocs(q);
+      const table = document.getElementById("historyTable");
+      table.innerHTML = '<tr><th>Loại</th><th>Số tiền</th><th>Ghi chú</th><th>Ngày</th></tr>';
 
-    const labels = Array.from(new Set([...Object.keys(monthlyIncome),...Object.keys(monthlyExpense)])).sort();
-    const incomeData = labels.map(l=>monthlyIncome[l]||0);
-    const expenseData = labels.map(l=>monthlyExpense[l]||0);
+      snapshot.docs.forEach(doc => {
+        const t = doc.data();
+        const date = t.date.toDate(); // Firestore Timestamp → JS Date
+        const row = table.insertRow(-1);
+        row.innerHTML = `<td>${t.type}</td>
+                         <td>${t.amount.toLocaleString()}</td>
+                         <td>${t.note}</td>
+                         <td>${date.toLocaleString()}</td>`;
+      });
+    }
 
-    const ctx = document.getElementById("barChart").getContext("2d");
-    if(barChart) barChart.destroy();
-    barChart = new Chart(ctx,{
-      type:'bar',
-      data:{ labels, datasets:[ {label:'Thu nhập',data:incomeData,backgroundColor:'#28a745'}, {label:'Chi tiêu',data:expenseData,backgroundColor:'#dc3545'} ] },
-      options:{ responsive:true, scales:{ y:{ beginAtZero:true } } }
-    });
-  }
+    loadHistory();
+  </script>
 
-  function logout() {
-    sessionStorage.clear();
-    window.location.href = "index.html";
-  }
-
-  fetchData();
-</script>
 </body>
 </html>
